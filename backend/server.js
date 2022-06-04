@@ -1,13 +1,22 @@
 const express = require('express');
+
 require('dotenv').config();
+const port = process.env.PORT || 5000;
+
 const app = express();
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 
-const PORT = process.env.PORT || 8080;
+const userRouter = require('./routes/userRouter');
 
-app.use((req, res) => {
-  res.send('Hello, world!')
-});
+app.use('/api/users', userRouter);
 
-app.listen(PORT, () => {
-  console.log(`Listening on port: ${PORT}`);
+app.use((err, _req, res, _next) => {
+  let { status = 500, message } = err;
+
+  res.status(status).json({ message });
+})
+
+app.listen(port, () => {
+  console.log(`Listening on port: ${port}`);
 });
