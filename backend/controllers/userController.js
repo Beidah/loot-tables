@@ -6,6 +6,7 @@ const register = async (req, res, next) => {
 
   for (let param of requiredParams) {
     if (!req.body[param]) {
+      console.error(req);
       return next({
         status: 400,
         message: `Missing parameter: ${param}`,

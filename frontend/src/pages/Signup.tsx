@@ -1,4 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { AppDispatch, RootState } from "../app/store";
+import { register, reset, UserFormData } from "../features/auth/authSlice";
+
 
 function Signup() {
   const [formData, setFormData] = useState({
@@ -8,10 +13,41 @@ function Signup() {
     confirm_password: '',
   });
 
+  const navigate = useNavigate();
+  const dispatch: AppDispatch = useDispatch();
+
+  const getAuthStore = (state: RootState) => state.auth;
+  const { user, isLoading, isSuccess, isError, message } = useSelector(getAuthStore);
+
+  useEffect(() => {
+    if (isError) {
+      // TODO: handle error
+      console.error("Error:", message);
+    }
+
+    if (isSuccess || user) {
+      navigate('/');
+    }
+
+    dispatch(reset());
+  }, [user, isError, isSuccess, message, navigate, dispatch]);
+
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    console.log(formData);
+    const { name, email, password, confirm_password } = formData;
+
+    if (password !== confirm_password) {
+      // TODO: Display error
+    } else {
+      const userData: UserFormData = {
+        name,
+        email,
+        password
+      }
+
+      dispatch(register(userData));
+    }
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

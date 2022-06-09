@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk, ThunkAction } from "@reduxjs/toolkit";
+import axios from "axios";
 import { BlobOptions } from "buffer";
 
 const API_URL = '/api/users/';
@@ -17,6 +18,8 @@ export interface User {
   email: String,
 }
 
+type UserResponse = User | null;
+
 interface AuthState {
   user?: User | null,
   isLoading: Boolean,
@@ -34,22 +37,37 @@ const initialState: AuthState = {
 }
 
 export const register = createAsyncThunk<
-  User,
+  UserResponse,
   UserFormData,
   {
     rejectValue: String,
   }
 >('auth/register', async (user, thunkAPI) => {
-  const response = await fetch(API_URL, {
-    method: "POST",
-    body: JSON.stringify(user),
-  });
-
-  if (response.status === 400) {
-    return thunkAPI.rejectWithValue((await response.json()));
+  try {
+    const { data } = await axios.post<User>(
+      API_URL,
+      user,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json'
+        }
+      }
+    );
+    
+    if (data) {
+      return data;
+    }
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      thunkAPI.rejectWithValue(error.message);
+    } else {
+      console.error('unexepected error: ', error);
+      thunkAPI.rejectWithValue('An unexpected error occured');
+    }
   }
 
-  return (await response.json()) as User;
+  return null;
 });
 
 export const authSlice = createSlice({
