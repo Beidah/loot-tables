@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { AppDispatch, RootState } from "../app/store";
-import { login, register, reset, UserFormData } from "../features/auth/authSlice";
+import { login, reset, UserFormData } from "../features/auth/authSlice";
 
 
 function Login() {
@@ -15,7 +15,7 @@ function Login() {
   const dispatch: AppDispatch = useDispatch();
 
   const getAuthStore = (state: RootState) => state.auth;
-  const { user, isLoading, isSuccess, isError, message } = useSelector(getAuthStore);
+  const { user, isSuccess, isError, message } = useSelector(getAuthStore);
 
   useEffect(() => {
     if (isError) {

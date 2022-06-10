@@ -17,7 +17,7 @@ function Signup() {
   const dispatch: AppDispatch = useDispatch();
 
   const getAuthStore = (state: RootState) => state.auth;
-  const { user, isLoading, isSuccess, isError, message } = useSelector(getAuthStore);
+  const { user, isSuccess, isError, message } = useSelector(getAuthStore);
 
   useEffect(() => {
     if (isError) {

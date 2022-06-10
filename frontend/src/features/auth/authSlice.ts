@@ -1,6 +1,5 @@
-import { createSlice, createAsyncThunk, ThunkAction } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-import { BlobOptions } from "buffer";
 
 const API_URL = '/api/users/';
 
