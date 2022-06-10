@@ -70,6 +70,40 @@ export const register = createAsyncThunk<
   return null;
 });
 
+export const login = createAsyncThunk<
+  UserResponse,
+  UserFormData,
+  {
+    rejectValue: String,
+  }
+>('auth/login', async (user, thunkAPI) => {
+  try {
+    const { data } = await axios.post<User>(
+      API_URL + 'login',
+      user,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json'
+        }
+      }
+    );
+    
+    if (data) {
+      return data;
+    }
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      thunkAPI.rejectWithValue(error.message);
+    } else {
+      console.error('unexepected error: ', error);
+      thunkAPI.rejectWithValue('An unexpected error occured');
+    }
+  }
+
+  return null;
+});
+
 export const authSlice = createSlice({
   name: 'auth',
   initialState,
@@ -95,6 +129,21 @@ export const authSlice = createSlice({
         state.isLoading = false;
         state.isError = false;
         state.message = action.payload || '';
+        state.user = null;
+      })
+      .addCase(login.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(login.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.user = action.payload;
+      })
+      .addCase(login.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = false;
+        state.message = action.payload || '';
+        state.user = null;
       })
   }
 })

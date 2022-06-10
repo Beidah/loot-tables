@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { AppDispatch, RootState } from "../app/store";
-import { register, reset, UserFormData } from "../features/auth/authSlice";
+import { login, register, reset, UserFormData } from "../features/auth/authSlice";
 
 
 function Login() {
@@ -39,6 +39,8 @@ function Login() {
       email,
       password
     }
+
+    dispatch(login(userData));
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
