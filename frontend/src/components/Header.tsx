@@ -1,7 +1,22 @@
-import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import { AppDispatch, RootState } from "../app/store";
+import { logout, reset } from "../features/auth/authSlice";
 
 
 function Header() {
+
+	const getAuthStore = (state: RootState) => state.auth;
+  const { user } = useSelector(getAuthStore);
+
+	const navigate = useNavigate();
+	const dispatch: AppDispatch = useDispatch();
+
+	const onLogout = () => {
+		dispatch(logout());
+		navigate('/');
+	}
+
   return (
 		<nav className="bg-white shadow-lg">
 			<div className="max-w-6xl mx-auto px-4">
@@ -21,8 +36,18 @@ function Header() {
 					</div>
 					{/* Secondary Navbar items */}
 					<div className="hidden md:flex items-center space-x-3 ">
-						<Link to="/login" className="py-2 px-2 font-medium text-gray-500 rounded hover:bg-green-500 hover:text-white transition duration-300">Log In</Link>
-						<Link to="/signup" className="py-2 px-2 font-medium text-white bg-green-500 rounded hover:bg-green-400 transition duration-300">Sign Up</Link>
+						{
+							user ? (
+								<>
+									<button onClick={onLogout} className="py-2 px-2 font-medium text-white bg-green-500 rounded hover:bg-green-400 transition duration-300" >Logout</button>
+								</>
+							) : (
+								<>
+									<Link to="/login" className="py-2 px-2 font-medium text-gray-500 rounded hover:bg-green-500 hover:text-white transition duration-300">Log In</Link>
+									<Link to="/signup" className="py-2 px-2 font-medium text-white bg-green-500 rounded hover:bg-green-400 transition duration-300">Sign Up</Link>
+								</>
+							)
+						}
 					</div>
 					{/* Mobile menu button */}
 					<div className="md:hidden flex items-center">
@@ -45,10 +70,10 @@ function Header() {
 			{/* mobile menu */}
 			<div className="hidden mobile-menu">
 				<ul className="">
-					<li className="active"><Link to="index.html" className="block text-sm px-2 py-4 text-white bg-green-500 font-semibold">Home</Link></li>
+					{/* <li className="active"><Link to="index.html" className="block text-sm px-2 py-4 text-white bg-green-500 font-semibold">Home</Link></li>
 					<li><Link to="#services" className="block text-sm px-2 py-4 hover:bg-green-500 transition duration-300">Services</Link></li>
 					<li><Link to="#about" className="block text-sm px-2 py-4 hover:bg-green-500 transition duration-300">About</Link></li>
-					<li><Link to="#contact" className="block text-sm px-2 py-4 hover:bg-green-500 transition duration-300">Contact Us</Link></li>
+					<li><Link to="#contact" className="block text-sm px-2 py-4 hover:bg-green-500 transition duration-300">Contact Us</Link></li> */}
 				</ul>
 			</div>
 		</nav>
