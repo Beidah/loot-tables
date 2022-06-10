@@ -47,6 +47,44 @@ const register = async (req, res, next) => {
   }
 }
 
+const login = async (req, res, next) => {
+  const requiredParams = ['email', 'password'];
+
+  for (let param of requiredParams) {
+    if (!req.body[param]) {
+      console.error(req);
+      return next({
+        status: 400,
+        message: `Missing parameter: ${param}`,
+      });
+    }
+  }
+  const { email, password } = req.body;
+
+  try {
+    const user = await User.findOne({ email });
+
+    if (user && (await bcrypt.compare(password, user.password))) {
+      res.json({
+        _id: user.id,
+        name: user.name,
+        email: user.email,
+      });
+    } else {
+      return next({
+        status: 400,
+        message: "Invalid login",
+      })
+    }
+  } catch (error) {
+    return next({
+      status: 500,
+      message: error.message,
+    })
+  }
+}
+
 module.exports = {
   register,
+  login,
 }
