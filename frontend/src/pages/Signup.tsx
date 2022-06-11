@@ -13,6 +13,8 @@ function Signup() {
     confirm_password: '',
   });
 
+  const [passwordDoesNotMatch, setPasswordMatch] = useState(false);
+
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
@@ -39,6 +41,7 @@ function Signup() {
 
     if (password !== confirm_password) {
       // TODO: Display error
+      setPasswordMatch(true);
     } else {
       const userData: UserFormData = {
         name,
@@ -63,19 +66,53 @@ function Signup() {
       <form onSubmit={onSubmit}>
         <div>
           <label htmlFor="name" className="block mb-1">Display Name</label>
-          <input onChange={handleChange} value={formData.name} type="text" id="name" name="name" className="py-2 outline-none rounded-md w-full" />
+          <input 
+            onChange={handleChange} 
+            value={formData.name} 
+            type="text" 
+            id="name" 
+            name="name" 
+            className="py-2 outline-none rounded-md w-full"
+            required
+          />
         </div>
         <div>
           <label htmlFor="email" className="block mb-1">Email</label>
-          <input onChange={handleChange} value={formData.email}  type="email" id="email" name="email" className="py-2 outline-none rounded-md w-full" />
+          <input 
+            onChange={handleChange} 
+            value={formData.email}  
+            type="email" id="email" 
+            name="email" 
+            className="py-2 outline-none rounded-md w-full" 
+            required
+          />
         </div>
         <div>
           <label htmlFor="password" className="block mb-1">Password</label>
-          <input onChange={handleChange} value={formData.password}  type="password" id="password" name="password" className="py-2 outline-none rounded-md w-full" />
+          <input 
+            onChange={handleChange} 
+            value={formData.password}  
+            type="password" 
+            id="password" 
+            name="password" 
+            className="py-2 outline-none rounded-md w-full"
+            required
+          />
         </div>
         <div>
           <label htmlFor="confirm_password" className="block mb-1">Confirm Password</label>
-          <input onChange={handleChange} value={formData.confirm_password}  type="password" id="confirm_password" name="confirm_password" className="py-2 outline-none rounded-md w-full" />
+          <input 
+            onChange={handleChange} 
+            value={formData.confirm_password}  
+            type="password" id="confirm_password" 
+            name="confirm_password" 
+            className="py-2 outline-none rounded-md w-full"
+            required
+          />
+          {
+            passwordDoesNotMatch &&
+            <p className="text-red-700 text-xs italic">Passwords do not match</p>
+          }
         </div>
         <input type="submit" className="mt-4 w-full rounded-md bg-green-700 text-white py-2 text-lg" value="Sign Up" />
       </form>
