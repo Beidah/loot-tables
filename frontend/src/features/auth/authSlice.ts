@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import { RootState } from "../../app/store";
 
 const API_URL = '/api/users/';
 
@@ -21,10 +22,10 @@ type UserResponse = User | null;
 
 interface AuthState {
   user?: User | null,
-  isLoading: Boolean,
-  isSuccess: Boolean,
-  isError: Boolean,
-  message: String
+  isLoading: boolean,
+  isSuccess: boolean,
+  isError: boolean,
+  message: string
 }
 
 const initialState: AuthState = {
@@ -39,7 +40,7 @@ export const register = createAsyncThunk<
   UserResponse,
   UserFormData,
   {
-    rejectValue: String,
+    rejectValue: string,
   }
 >('auth/register', async (user, thunkAPI) => {
   try {
@@ -54,30 +55,32 @@ export const register = createAsyncThunk<
       }
     );
     
-    if (data) {
-      return data;
-    }
+    return data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
-      thunkAPI.rejectWithValue(error.message);
-    } else {
-      console.error('unexepected error: ', error);
-      thunkAPI.rejectWithValue('An unexpected error occured');
+      let message = '';
+      if (error.response && error.response.data) {
+        message = (error.response.data as Error).message;
+      } else {
+        message = error.message;
+      }
+      return thunkAPI.rejectWithValue(`Error: ${message}`);
     }
-  }
 
-  return null;
+    console.error('unexepected error: ', error);
+    return thunkAPI.rejectWithValue('An unexpected error occured');
+  }
 });
 
 export const login = createAsyncThunk<
   UserResponse,
   UserFormData,
   {
-    rejectValue: String,
+    rejectValue: string,
   }
 >('auth/login', async (user, thunkAPI) => {
   try {
-    const { data } = await axios.post<User>(
+    const { data, status } = await axios.post<User>(
       API_URL + 'login',
       user,
       {
@@ -87,20 +90,26 @@ export const login = createAsyncThunk<
         }
       }
     );
-    
-    if (data) {
-      return data;
+
+    if (status === 400) {
+      return thunkAPI.rejectWithValue(`Error: ${data}`)
     }
+    
+    return data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
-      thunkAPI.rejectWithValue(error.message);
-    } else {
-      console.error('unexepected error: ', error);
-      thunkAPI.rejectWithValue('An unexpected error occured');
+      let message = '';
+      if (error.response && error.response.data) {
+        message = (error.response.data as Error).message;
+      } else {
+        message = error.message;
+      }
+      return thunkAPI.rejectWithValue(`Error: ${message}`);
     }
-  }
 
-  return null;
+    console.error('unexepected error: ', error);
+    return thunkAPI.rejectWithValue('An unexpected error occured');
+  }
 });
 
 export const authSlice = createSlice({
@@ -129,7 +138,7 @@ export const authSlice = createSlice({
       })
       .addCase(register.rejected, (state, action) => {
         state.isLoading = false;
-        state.isError = false;
+        state.isError = true;
         state.message = action.payload || '';
         state.user = null;
       })
@@ -139,11 +148,12 @@ export const authSlice = createSlice({
       .addCase(login.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
+        console.log(action);
         state.user = action.payload;
       })
       .addCase(login.rejected, (state, action) => {
         state.isLoading = false;
-        state.isError = false;
+        state.isError = true;
         state.message = action.payload || '';
         state.user = null;
       })
@@ -151,4 +161,5 @@ export const authSlice = createSlice({
 })
 
 export const { reset, logout } = authSlice.actions;
+export const selectAuth = (state: RootState) => state.auth;
 export default authSlice.reducer;

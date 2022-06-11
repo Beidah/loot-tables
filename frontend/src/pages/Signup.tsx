@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { AppDispatch, RootState } from "../app/store";
-import { register, reset, UserFormData } from "../features/auth/authSlice";
+import { useAppDispatch, useAppSelector } from "../app/hooks";
+import { register, reset, selectAuth, UserFormData } from "../features/auth/authSlice";
+import { setError } from "../features/err/errorSlice";
 
 
 function Signup() {
@@ -14,14 +14,14 @@ function Signup() {
   });
 
   const navigate = useNavigate();
-  const dispatch: AppDispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
-  const getAuthStore = (state: RootState) => state.auth;
-  const { user, isSuccess, isError, message } = useSelector(getAuthStore);
+  const { user, isSuccess, isError, message } = useAppSelector(selectAuth);
 
   useEffect(() => {
     if (isError) {
       // TODO: handle error
+      dispatch(setError(message));
       console.error("Error:", message);
     }
 
