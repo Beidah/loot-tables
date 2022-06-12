@@ -114,7 +114,7 @@ function Signup() {
             <p className="text-red-700 text-xs italic">Passwords do not match</p>
           }
         </div>
-        <input type="submit" className="mt-4 w-full rounded-md bg-green-700 text-white py-2 text-lg" value="Sign Up" />
+        <input type="submit" className="mt-4 w-full text-white bg-green-500 rounded hover:bg-green-400 transition duration-300 py-2 px-2 text-lg" value="Sign Up" />
       </form>
     </div>
   )
