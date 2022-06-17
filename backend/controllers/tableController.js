@@ -1,3 +1,4 @@
+const { protect } = require('../middleware/auth');
 const Tables = require('../models/tables');
 
 const createTable =  async (req, res, next) => {
@@ -13,9 +14,10 @@ const createTable =  async (req, res, next) => {
     }
   }
 
-  const { name, table, userId, private = false } = req.body;
+  const { name, table, private = false } = req.body;
+  const { user } = req;
 
-  const tableExists = await Tables.findOne({ name, user: userId });
+  const tableExists = await Tables.findOne({ name, user });
   if (tableExists) {
     return next({
       status: 400,
@@ -27,7 +29,7 @@ const createTable =  async (req, res, next) => {
     name,
     table,
     private,
-    user: userId
+    user: req.user.id,
   });
 
   try {
@@ -42,5 +44,5 @@ const createTable =  async (req, res, next) => {
 }
 
 module.exports = {
-  createTable,
+  createTable: [protect, createTable],
 }
