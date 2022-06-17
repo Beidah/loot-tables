@@ -11,8 +11,15 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 const userRouter = require('./routes/userRouter');
+const tableRouter = require('./routes/tableRouter');
 
 app.use('/api/users', userRouter);
+app.use('/api/tables', tableRouter);
+
+// 404 catch all
+app.use((req, res) => {
+  res.status(404).json({ message: `route '${req.baseUrl}' not found` });
+})
 
 app.use((err, _req, res, _next) => {
   let { status = 500, message } = err;
