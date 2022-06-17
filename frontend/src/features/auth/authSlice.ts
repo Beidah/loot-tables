@@ -4,7 +4,12 @@ import { RootState } from "../../app/store";
 
 const API_URL = '/api/users/';
 
-const user = JSON.parse(localStorage.getItem('user') || '') as User;
+const userStored = localStorage.getItem('user');
+
+let user = null;
+
+if (userStored)
+  user = JSON.parse(localStorage.getItem('user') || '') as User;
 
 export interface UserFormData  {
   name?: String,
@@ -16,6 +21,7 @@ export interface User {
   _id: String,
   name: String,
   email: String,
+  token: String,
 }
 
 type UserResponse = User | null;
@@ -54,6 +60,10 @@ export const register = createAsyncThunk<
         }
       }
     );
+
+    if (data) {
+      localStorage.setItem('user', JSON.stringify(data));
+    }
     
     return data;
   } catch (error) {
@@ -94,6 +104,10 @@ export const login = createAsyncThunk<
     if (status === 400) {
       return thunkAPI.rejectWithValue(`Error: ${data}`)
     }
+
+    if (data) {
+      localStorage.setItem('user', JSON.stringify(data));
+    }
     
     return data;
   } catch (error) {
@@ -124,6 +138,7 @@ export const authSlice = createSlice({
     },
     logout: (state) => {
       state.user = null;
+      localStorage.removeItem('user');
     }
   },
   extraReducers: (builder) => {
