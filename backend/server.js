@@ -10,6 +10,10 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+// If the user sends a auth token, log them in
+const { logUserIn } = require('./middleware/auth');
+app.use(logUserIn);
+
 const userRouter = require('./routes/userRouter');
 const tableRouter = require('./routes/tableRouter');
 

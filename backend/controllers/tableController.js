@@ -1,6 +1,24 @@
 const { protect } = require('../middleware/auth');
 const Tables = require('../models/tables');
 
+const getTable = async (req, res, next) => {
+  const { id } = req.params;
+
+  const table = await Tables.findById(id);
+
+  if (
+    !table || 
+    (table.private && (!req.user || table.user.equals(req.user)))
+  ) {
+    return next({
+      status: 404,
+      message: 'Table not found',
+    });
+  }
+
+  return res.json(table);
+}
+
 const createTable =  async (req, res, next) => {
   const requiredParams = ['name', 'table'];
 
@@ -44,5 +62,6 @@ const createTable =  async (req, res, next) => {
 }
 
 module.exports = {
+  getTable: [getTable],
   createTable: [protect, createTable],
 }
