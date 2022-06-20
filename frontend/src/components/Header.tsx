@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { AppDispatch, RootState } from "../app/store";
@@ -5,6 +6,7 @@ import { logout } from "../features/auth/authSlice";
 
 
 function Header() {
+	const [hideMenu, setHideMenu] = useState(true);
 
 	const getAuthStore = (state: RootState) => state.auth;
   const { user } = useSelector(getAuthStore);
@@ -15,6 +17,10 @@ function Header() {
 	const onLogout = () => {
 		dispatch(logout());
 		navigate('/');
+	}
+
+	const toggleMenu = () => {
+		setHideMenu(hideMenu => !hideMenu)
 	}
 
   return (
@@ -63,6 +69,7 @@ function Header() {
 							strokeWidth="2"
 							viewBox="0 0 24 24"
 							stroke="currentColor"
+							onClick={toggleMenu}
 						>
 							<path d="M4 6h16M4 12h16M4 18h16"></path>
 						</svg>
@@ -71,7 +78,8 @@ function Header() {
 				</div>
 			</div>
 			{/* mobile menu */}
-			<div className="hidden mobile-menu">
+			{ !hideMenu && 
+			<div className="mobile-menu">
 				<ul className="">
 					<li><Link to="/tables/new" className="block text-sm px-2 py-4 hover:bg-green-500 transition duration-300">New Table</Link></li>
 					{/* <li className="active"><Link to="index.html" className="block text-sm px-2 py-4 text-white bg-green-500 font-semibold">Home</Link></li>
@@ -79,6 +87,7 @@ function Header() {
 					<li><Link to="#contact" className="block text-sm px-2 py-4 hover:bg-green-500 transition duration-300">Contact Us</Link></li> */}
 				</ul>
 			</div>
+			}
 		</nav>
   )
 }
