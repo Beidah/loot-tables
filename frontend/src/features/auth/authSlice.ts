@@ -12,22 +12,22 @@ if (userStored)
   user = JSON.parse(localStorage.getItem('user') || '') as User;
 
 export interface UserFormData  {
-  name?: String,
-  email: String,
-  password: String,
+  name?: string,
+  email: string,
+  password: string,
 }
 
 export interface User {
-  _id: String,
-  name: String,
-  email: String,
-  token: String,
+  _id: string,
+  name: string,
+  email: string,
+  token: string,
 }
 
 type UserResponse = User | null;
 
 interface AuthState {
-  user?: User | null,
+  user: User | null,
   isLoading: boolean,
   isSuccess: boolean,
   isError: boolean,
@@ -176,4 +176,5 @@ export const authSlice = createSlice({
 
 export const { reset, logout } = authSlice.actions;
 export const selectAuth = (state: RootState) => state.auth;
+export const selectUserToken = (state: RootState) => state.auth.user?.token;
 export default authSlice.reducer;

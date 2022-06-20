@@ -1,7 +1,13 @@
-import React from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { useForm, useFieldArray } from 'react-hook-form';
+import { selectUserToken } from "../features/auth/authSlice";
+import { setError } from "../features/err/errorSlice";
+import { submitTable } from "../app/service";
 
-type FormValues = {
+export type TableFormValues = {
   name: string;
   private: boolean;
   table: {
@@ -11,7 +17,7 @@ type FormValues = {
 }
 
 function CreateTable() {
-  const { register, handleSubmit, control, formState: { errors } } = useForm<FormValues>({
+  const { register, handleSubmit, control, formState: { errors } } = useForm<TableFormValues>({
     defaultValues: {
       name: '',
       table: [
@@ -28,6 +34,19 @@ function CreateTable() {
     name: 'table',
   });
 
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+
+  const userToken = useAppSelector(selectUserToken);
+
+  useEffect(() => {
+    if (!userToken) {
+      navigate('/');
+    }
+  }, [userToken, navigate])
+
+
+
   const removeEvent = (index: number) => {
     // Always need at least one event.
     if (fields.length === 1) {
@@ -43,10 +62,17 @@ function CreateTable() {
     append({event: '', weight: 1});
   }
 
-  const onSubmit = handleSubmit((data) => {
-    console.log(data);
-    console.log(errors && true);
-  })
+  const onSubmit = handleSubmit(async (formData) => {
+    const { data, error } = await submitTable(formData, userToken);
+
+    if (error) {
+      dispatch(setError(error));
+    }
+
+    if (data) {
+      navigate(`/tables/${data._id}`);
+    }
+  });
 
   return (
     <div className="bg-slate-200 container mx-auto rounded-xl mt-5 max-w-4xl shadow-lg p-5">
