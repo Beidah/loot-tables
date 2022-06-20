@@ -29,10 +29,13 @@ function Header() {
 							</Link>
 						</div>
 						{/* Primary Navbar items */}
-						{/* <div className="hidden md:flex items-center space-x-1">
+						<div className="hidden md:flex items-center space-x-1">
 							<Link to="/" className="py-4 px-2 text-green-500 border-b-4 border-green-500 font-semibold ">Home</Link>
-							<Link to="" className="py-4 px-2 text-gray-500 font-semibold hover:text-green-500 transition duration-300">About</Link>
-						</div> */}
+							{ user &&
+							// only show create table link if user is logged in
+							<Link to="/tables/new" className="py-4 px-2 text-gray-500 font-semibold hover:text-green-500 transition duration-300">New Table</Link>
+							}
+						</div>
 					</div>
 					{/* Secondary Navbar items */}
 					<div className="hidden md:flex items-center space-x-3 ">
@@ -70,8 +73,8 @@ function Header() {
 			{/* mobile menu */}
 			<div className="hidden mobile-menu">
 				<ul className="">
+					<li><Link to="/tables/new" className="block text-sm px-2 py-4 hover:bg-green-500 transition duration-300">New Table</Link></li>
 					{/* <li className="active"><Link to="index.html" className="block text-sm px-2 py-4 text-white bg-green-500 font-semibold">Home</Link></li>
-					<li><Link to="#services" className="block text-sm px-2 py-4 hover:bg-green-500 transition duration-300">Services</Link></li>
 					<li><Link to="#about" className="block text-sm px-2 py-4 hover:bg-green-500 transition duration-300">About</Link></li>
 					<li><Link to="#contact" className="block text-sm px-2 py-4 hover:bg-green-500 transition duration-300">Contact Us</Link></li> */}
 				</ul>
