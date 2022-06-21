@@ -10,6 +10,7 @@ const getTable = async (req, res, next) => {
     !table || 
     (table.private && (!req.user || table.user.equals(req.user)))
   ) {
+    console.log(!table);
     return next({
       status: 404,
       message: 'Table not found',

@@ -82,9 +82,6 @@ function Header() {
 			<div className="mobile-menu">
 				<ul className="">
 					<li><Link to="/tables/new" className="block text-sm px-2 py-4 hover:bg-green-500 transition duration-300">New Table</Link></li>
-					{/* <li className="active"><Link to="index.html" className="block text-sm px-2 py-4 text-white bg-green-500 font-semibold">Home</Link></li>
-					<li><Link to="#about" className="block text-sm px-2 py-4 hover:bg-green-500 transition duration-300">About</Link></li>
-					<li><Link to="#contact" className="block text-sm px-2 py-4 hover:bg-green-500 transition duration-300">Contact Us</Link></li> */}
 				</ul>
 			</div>
 			}

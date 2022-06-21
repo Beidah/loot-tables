@@ -7,6 +7,7 @@ import CreateTable from './pages/CreateTable';
 import Landing from './pages/Landing';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
+import Table from './pages/Table';
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
           <Route path='/signup' element={<Signup />} />
           <Route path='/login' element={<Login />} />
           <Route path='/tables/new' element={<CreateTable />} />
+          <Route path='/tables/:id' element={<Table />} />
         </Routes>
       </Router>
     </>

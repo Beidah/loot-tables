@@ -5,7 +5,7 @@ import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { useForm, useFieldArray } from 'react-hook-form';
 import { selectUserToken } from "../features/auth/authSlice";
 import { setError } from "../features/err/errorSlice";
-import { submitTable } from "../app/service";
+import { submitTable } from "../services/tableServices";
 
 export type TableFormValues = {
   name: string;
@@ -63,7 +63,7 @@ function CreateTable() {
   }
 
   const onSubmit = handleSubmit(async (formData) => {
-    const { data, error } = await submitTable(formData, userToken);
+    const { results: data, error } = await submitTable(formData, userToken);
 
     if (error) {
       dispatch(setError(error));
