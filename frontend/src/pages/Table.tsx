@@ -13,12 +13,12 @@ function Table() {
   const navigate = useNavigate();
 
   const dispatch = useAppDispatch();
-  const userId = useAppSelector(selectUserToken);
+  const userToken = useAppSelector(selectUserToken);
 
   useEffect(() => {
     const fetchTable = async () => {
       if (id) {
-        const { data, error } = await getTable(id, userId);
+        const { data, error } = await getTable(id, userToken);
 
         if (error) {
           dispatch(setError(error));
@@ -33,14 +33,14 @@ function Table() {
     }
     
     fetchTable();
-  }, [id, navigate, dispatch, userId]);
+  }, [id, navigate, dispatch, userToken]);
 
   if (!table) {
     return <></>
   }
 
   const roll = () => {
-    if (table) {
+    if (table && table.table) {
       let items = table.table;
       let i: number;
 
@@ -76,7 +76,7 @@ function Table() {
             </tr>
           </thead>
           <tbody>
-            {table.table.map((event) => {
+            {table.table?.map((event) => {
               return (
                 <tr className="m-4">
                   <td className="border border-slate-600">

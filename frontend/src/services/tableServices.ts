@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosRequestHeaders } from "axios";
 import { TableFormValues } from "../pages/CreateTable";
 
 const API_URL = '/api/tables/';
@@ -7,7 +7,7 @@ export interface Table {
   _id: string,
   name: string,
   private: boolean,
-  table: {
+  table?: {
     event: string,
     weight: number,
   }[],
@@ -18,9 +18,7 @@ export const getTable = async (tableId: string, userToken?: string) => {
   let err: string | undefined;
 
   try {
-    let headers = {
-      authorization: ''
-    };
+    let headers: AxiosRequestHeaders = {};
 
     if (userToken)
       headers.authorization = `Bearer ${userToken}`;

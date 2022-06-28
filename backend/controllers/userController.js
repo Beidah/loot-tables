@@ -1,6 +1,45 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const User = require('../models/users');
+const Table = require('../models/tables');
+
+const getUser = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    let user = await User.findById(id, '-password -admin');
+
+    if (!user) {
+      return next({
+        status: 404,
+        message: 'User not found',
+      });
+    }
+
+    if (req.user && req.user.id == id) {
+      const tables = await Table.find({ user: user._id });
+      user = {
+        ...user,
+        tables,
+      };
+    } else {
+      const tables = await Table.find({ user: user._id, private: false });
+      user = {
+        ...user,
+        tables,
+      };
+    }
+
+    console.log({ user });
+
+    return res.json(user);
+  } catch (error) {
+    return next({
+      status: 500,
+      message: error.message,
+    })
+  }
+}
 
 const register = async (req, res, next) => {
   const requiredParams = ['email', 'name', 'password'];
@@ -94,6 +133,7 @@ const generateToken = (id) => {
 }
 
 module.exports = {
+  getUser,
   register,
   login,
 }

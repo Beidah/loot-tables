@@ -8,6 +8,7 @@ import Landing from './pages/Landing';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Table from './pages/Table';
+import UserPage from './pages/UserPage';
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
           <Route path='/login' element={<Login />} />
           <Route path='/tables/new' element={<CreateTable />} />
           <Route path='/tables/:id' element={<Table />} />
+          <Route path='/users/:id' element={<UserPage />} />
         </Routes>
       </Router>
     </>

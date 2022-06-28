@@ -22,7 +22,8 @@ app.use('/api/tables', tableRouter);
 
 // 404 catch all
 app.use((req, res) => {
-  res.status(404).json({ message: `route '${req.baseUrl}' not found` });
+  console.log(req);
+  res.status(404).json({ message: `route '${req.originalUrl}' not found` });
 })
 
 app.use((err, _req, res, _next) => {
