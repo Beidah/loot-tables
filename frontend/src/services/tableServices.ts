@@ -7,8 +7,8 @@ export interface Table {
   _id: string,
   name: string,
   private: boolean,
-  table?: {
-    event: string,
+  events?: {
+    name: string,
     weight: number,
   }[],
 }

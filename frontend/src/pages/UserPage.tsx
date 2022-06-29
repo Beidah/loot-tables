@@ -18,7 +18,6 @@ function UserPage() {
       if (id) {
         try {
           const user = await getUser(id, true, userToken);
-          console.log(user.tables);
           setUser(user);
         } catch (error) {
           dispatch(setError((error as Error).message));
@@ -40,6 +39,14 @@ function UserPage() {
   return (
     <div className="container">
       <h2 className="text-center">{user.name}</h2>
+      <div className="containers">
+        <h3>Tables</h3>
+        {user.tables?.map((table, id) => (
+          <div key={id}>
+            <p>{table.name}</p>
+          </div>
+        ))}
+      </div>
     </div>
   )
 }

@@ -1,11 +1,12 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const User = require('../models/users');
-const Table = require('../models/tables');
+const Tables = require('../models/tables');
 
 const getUser = async (req, res, next) => {
   try {
     const { id } = req.params;
+    const tables = req.query.tables && req.query.tables === "true";
 
     let user = await User.findById(id, '-password -admin');
 
@@ -16,21 +17,22 @@ const getUser = async (req, res, next) => {
       });
     }
 
-    if (req.user && req.user.id == id) {
-      const tables = await Table.find({ user: user._id });
-      user = {
-        ...user,
-        tables,
-      };
-    } else {
-      const tables = await Table.find({ user: user._id, private: false });
-      user = {
-        ...user,
-        tables,
-      };
+    if (tables) {
+      if (!req.user || req.user.id !== id) {
+        await user.populate({
+          path: 'tables',
+          model: Tables,
+          match: { private: false },
+        });
+      } else {
+        await user.populate({
+          path: 'tables',
+          model: Tables
+        });
+      }
     }
 
-    console.log({ user });
+    console.log({user});
 
     return res.json(user);
   } catch (error) {
@@ -46,7 +48,6 @@ const register = async (req, res, next) => {
 
   for (let param of requiredParams) {
     if (!req.body[param]) {
-      console.error(req);
       return next({
         status: 400,
         message: `Missing parameter: ${param}`,

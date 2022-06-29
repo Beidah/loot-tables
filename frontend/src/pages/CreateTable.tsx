@@ -10,8 +10,8 @@ import { submitTable } from "../services/tableServices";
 export type TableFormValues = {
   name: string;
   private: boolean;
-  table: {
-    event: string;
+  events: {
+    name: string;
     weight: number;
   }[];
 }
@@ -20,9 +20,9 @@ function CreateTable() {
   const { register, handleSubmit, control, formState: { errors } } = useForm<TableFormValues>({
     defaultValues: {
       name: '',
-      table: [
+      events: [
         {
-          event: '',
+          name: '',
           weight: 1,
         }
       ],
@@ -31,7 +31,7 @@ function CreateTable() {
 
   const { fields, append, remove } = useFieldArray({
     control,
-    name: 'table',
+    name: 'events',
   });
 
   const navigate = useNavigate();
@@ -59,7 +59,7 @@ function CreateTable() {
   const addEvent = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
 
-    append({event: '', weight: 1});
+    append({name: '', weight: 1});
   }
 
   const onSubmit = handleSubmit(async (formData) => {
@@ -114,14 +114,14 @@ function CreateTable() {
                     <input
                       className="w-32 form-input rounded-md outline-none"
                       type="number"
-                      aria-invalid={errors.table && errors.table[index].weight ? "true" : "false"}
-                      { ...register(`table.${index}.weight`, { 
+                      aria-invalid={errors.events && errors.events[index].weight ? "true" : "false"}
+                      { ...register(`events.${index}.weight`, { 
                           required: true, max: 100, min: 1
                         })
                       }
                     />
-                    {errors.table && errors.table[index].weight && (
-                      <span>{ errors.table[index]?.weight?.type }</span>
+                    {errors.events && errors.events[index].weight && (
+                      <span>{ errors.events[index]?.weight?.type }</span>
                     )}
                   </td>
                   <td>
@@ -129,10 +129,10 @@ function CreateTable() {
                     <input
                       className="w-full mx-2 form-input"
                       type="text"
-                      aria-invalid={errors.table && errors.table[index].event ? "true" : "false"}
-                      { ...register(`table.${index}.event`, { required: true }) }
+                      aria-invalid={errors.events && errors.events[index].name ? "true" : "false"}
+                      { ...register(`events.${index}.name`, { required: true }) }
                     />
-                    {errors.table  && errors.table[index].event?.type === 'required' && (
+                    {errors.events  && errors.events[index].name?.type === 'required' && (
                       <span>This field is required</span>
                     )}
                   </td>

@@ -17,9 +17,17 @@ const userSchema = new mongoose.Schema({
   admin: {
     default: false,
     type: Boolean
-  }
+  },
 }, {
   timestamps: true,
+  toJSON: { virtuals: true },
+  toObject: { virtuals: true },
 });
 
-module.exports = mongoose.model('Users', userSchema);
+userSchema.virtual('tables', {
+  ref: "Table",
+  localField: '_id',
+  foreignField: 'user',
+})
+
+module.exports = mongoose.model('User', userSchema, "users");

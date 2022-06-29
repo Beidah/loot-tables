@@ -8,15 +8,15 @@ const tablesSchema = new mongoose.Schema({
   user: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
-    ref: 'Users',
+    ref: 'User',
   },
-  table: [
+  events: [
     {
       weight: {
         type: Number,
         required: true,
       },
-      event: {
+      name: {
         type: String,
         required: true,
       }
@@ -30,4 +30,4 @@ const tablesSchema = new mongoose.Schema({
   timestamps: true,
 });
 
-module.exports = mongoose.model('Tables', tablesSchema);
+module.exports = mongoose.model('Table', tablesSchema, "tables");

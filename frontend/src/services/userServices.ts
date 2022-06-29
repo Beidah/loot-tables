@@ -21,7 +21,10 @@ export const getUser = async (userId: string, tables: boolean, userToken?: strin
 
     const { data } = await axios.get<User>(route, {
       headers,
-    });
+      params: {
+        tables
+      }
+    },);
 
     if (data) return data;
 

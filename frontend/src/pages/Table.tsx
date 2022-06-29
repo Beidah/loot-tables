@@ -36,12 +36,17 @@ function Table() {
   }, [id, navigate, dispatch, userToken]);
 
   if (!table) {
-    return <></>
+    // TODO: Create 404 page
+    return (
+      <div className="container">
+        <h1>Table not found.</h1>
+      </div>
+    )
   }
 
   const roll = () => {
-    if (table && table.table) {
-      let items = table.table;
+    if (table && table.events) {
+      let items = table.events;
       let i: number;
 
       let weights: number[] = [];
@@ -56,7 +61,7 @@ function Table() {
         if (weights[i] > random) break;
       }
 
-      setEvent(items[i].event);
+      setEvent(items[i].name);
     }
   }
 
@@ -76,9 +81,9 @@ function Table() {
             </tr>
           </thead>
           <tbody>
-            {table.table?.map((event) => {
+            {table.events?.map((event, index) => {
               return (
-                <tr className="m-4">
+                <tr key={index} className="m-4">
                   <td className="border border-slate-600">
                     <p className="m-1">
 
@@ -88,7 +93,7 @@ function Table() {
                   <td className="border border-slate-600">
                     <p className="m-1">
 
-                      {event.event}
+                      {event.name}
                     </p>
                   </td>
                 </tr>
