@@ -8,6 +8,7 @@ import { getTable, Table as LootTable } from "../services/tableServices";
 function Table() {
   const [table, setTable] = useState<LootTable>();
   const [event, setEvent] = useState('');
+  const [loading, setLoading] = useState(true);
   const { id } = useParams<{ id: string }>();
 
   const navigate = useNavigate();
@@ -27,13 +28,23 @@ function Table() {
         if (data) {
           setTable(data);
         }
+
+        setLoading(false);
       } else {
         navigate('/');
       }
     }
     
-    fetchTable();
-  }, [id, navigate, dispatch, userToken]);
+    if (loading)
+      fetchTable();
+  }, [id, navigate, dispatch, userToken, loading]);
+
+  if (loading) {
+    // TODO: create loading component
+    return (
+      <div className="container text-center">Loading</div>
+    )
+  }
 
   if (!table) {
     // TODO: Create 404 page

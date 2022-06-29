@@ -7,6 +7,7 @@ import { getUser, User } from "../services/userServices";
 
 function UserPage() {
   const [user, setUser] = useState<User>();
+  const [loading, setLoading] = useState(true);
   const { id } = useParams<{id: string}>();
 
   const navigate = useNavigate();
@@ -22,6 +23,8 @@ function UserPage() {
         } catch (error) {
           dispatch(setError((error as Error).message));
         }
+
+        setLoading(false);
       } else {
         navigate('/');
       }
@@ -30,9 +33,18 @@ function UserPage() {
     fetchUser();
   }, [id, navigate, dispatch, userToken]);
 
+  if (loading) {
+    // TODO: create loading component
+    return (
+      <div className="container text-center">Loading</div>
+    )
+  }
+
   if (!user) {
     return (
-      <div className="container">User not found</div>
+      <div className="container">
+        <h1 className="text-center">User not found</h1>
+      </div>
     )
   }
 
