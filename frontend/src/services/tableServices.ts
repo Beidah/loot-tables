@@ -12,6 +12,10 @@ export interface Table {
     name: string,
     weight: number,
   }[],
+  user: {
+    _id: string,
+    name: string,
+  }
 }
 
 export const getTable = async (tableId: string, userToken?: string) => {

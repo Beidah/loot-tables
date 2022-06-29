@@ -5,7 +5,8 @@ const Users = require('../models/users');
 const getTable = async (req, res, next) => {
   const { id } = req.params;
 
-  const table = await Tables.findById(id);
+  const table = await Tables.findById(id)
+    .populate('user', 'name _id');
 
   if (
     !table || 

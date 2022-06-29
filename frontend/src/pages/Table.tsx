@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { selectUserToken } from "../features/auth/authSlice";
 import { setError } from "../features/err/errorSlice";
@@ -68,7 +68,11 @@ function Table() {
 
   return (
     <div className="bg-slate-200 container mx-auto rounded-xl mt-5 max-w-4xl shadow-2xl p-5">
-      <h2 className="text-2xl text-center mb-5 font-bold">{table.name}</h2>
+      <h2 className="text-2xl text-center font-bold">{table.name}</h2>
+      <p className="mb-5 text-center text-slate-500 text-sm">
+        Made by:&nbsp;
+        <Link className="text-blue-400" to={`/users/${table.user._id}`}>{table.user.name}</Link>
+      </p>
       <div className="container">
         {
           event &&
