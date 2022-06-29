@@ -32,8 +32,6 @@ const getUser = async (req, res, next) => {
       }
     }
 
-    console.log({user});
-
     return res.json(user);
   } catch (error) {
     return next({

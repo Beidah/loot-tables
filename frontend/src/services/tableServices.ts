@@ -8,6 +8,7 @@ export interface Table {
   name: string,
   private: boolean,
   events?: {
+    _id: string,
     name: string,
     weight: number,
   }[],

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { selectUserToken } from "../features/auth/authSlice";
 import { setError } from "../features/err/errorSlice";
@@ -37,15 +37,16 @@ function UserPage() {
   }
 
   return (
-    <div className="container">
-      <h2 className="text-center">{user.name}</h2>
-      <div className="containers">
-        <h3>Tables</h3>
-        {user.tables?.map((table, id) => (
-          <div key={id}>
-            <p>{table.name}</p>
-          </div>
-        ))}
+    <div className="bg-slate-200 container mx-auto rounded-xl mt-5 max-w-4xl shadow-2xl p-5">
+      <h2 className="text-2xl text-center mb-5 font-bold">{user.name}'s Tables</h2>
+      <div className="container">
+        <ul>
+          {user.tables?.map((table) => (
+            <li key={table._id}>
+              <Link className="text-blue-500" to={`/tables/${table._id}`}>{table.name}</Link>
+            </li>
+          ))}
+        </ul>
       </div>
     </div>
   )
