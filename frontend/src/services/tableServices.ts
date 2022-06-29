@@ -19,9 +19,6 @@ export interface Table {
 }
 
 export const getTable = async (tableId: string, userToken?: string) => {
-  let results: Table | undefined;
-  let err: string | undefined;
-
   try {
     let headers: AxiosRequestHeaders = {};
 
@@ -32,23 +29,20 @@ export const getTable = async (tableId: string, userToken?: string) => {
     const { data } = await axios.get<Table>(route, {
       headers
     });
-    results = data;
+    
+    if (data) return data;
+
+    throw new Error("No data found");
   } catch (error) {
     if (axios.isAxiosError(error)) {
-      let message = '';
       if (error.response && error.response.data) {
-        message = (error.response.data as Error).message;
-      } else {
-        message = error.message;
+        const message = (error.response.data as Error).message;
+        throw new Error(message);
       }
-      err = message;
     }
 
-    console.error('unexepected error: ', error);
-    err = 'Unexpected error occurred.';
+    throw error;
   }
-
-  return { data: results, error: err }
 }
 
 export const submitTable = async (tableData: TableFormValues, userToken?: string) => {

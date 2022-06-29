@@ -19,14 +19,11 @@ function Table() {
   useEffect(() => {
     const fetchTable = async () => {
       if (id) {
-        const { data, error } = await getTable(id, userToken);
-
-        if (error) {
-          dispatch(setError(error));
-        }
-
-        if (data) {
-          setTable(data);
+        try {
+          const table = await getTable(id, userToken);
+          setTable(table);
+        } catch (error) {
+          dispatch(setError((error as Error).message))
         }
 
         setLoading(false);
