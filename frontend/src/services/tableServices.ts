@@ -47,10 +47,10 @@ export const getTable = async (tableId: string, userToken?: string) => {
 
 export const submitTable = async (tableData: TableFormValues, userToken?: string) => {
   let results: Table | undefined;
-  let error: string | undefined;
+  let err: string | undefined;
   try {
     if (!userToken) {
-      error = 'User not logged in!'
+      err = 'User not logged in!'
     }
 
     const authorization = `Bearer ${userToken}`;
@@ -67,12 +67,12 @@ export const submitTable = async (tableData: TableFormValues, userToken?: string
       } else {
         message = error.message;
       }
-      error = message;
+      err = message;
     }
 
     console.error('unexepected error: ', error);
-    error = 'Unexpected error occurred.';
+    err = 'Unexpected error occurred.';
   }
 
-  return { results, error }
+  return { results, error: err }
 }

@@ -40,7 +40,7 @@ function CreateTable() {
 
   useEffect(() => {
     if (!userToken) {
-      navigate('/');
+      navigate('/login');
     }
   }, [userToken, navigate])
 
@@ -82,10 +82,10 @@ function CreateTable() {
           <input
             className="py-2 outline-none rounded-md w-1/2 form-input"
             aria-invalid={errors.name ? "true" : "false" }
-            { ...register("name", {required: true}) }
+            { ...register("name", {required: "Name is required"}) }
           />
           { errors.name && (
-            <span>Name is required</span>
+            <p className="text-red-700 text-xs italic">{errors.name.message}</p>
           )}
         </div>
         <div className="w-1/2 inline">
@@ -115,12 +115,17 @@ function CreateTable() {
                       type="number"
                       aria-invalid={errors.events && errors.events[index].weight ? "true" : "false"}
                       { ...register(`events.${index}.weight`, { 
-                          required: true, max: 100, min: 1
+                          required: "Event weight is required", 
+                          max: { value: 100, message: "Weight cannot excede 100" }, 
+                          min: { value: 1, message: 'Weight needs to be at least 1' },
+                          validate: (value) => {
+                            return value === Math.floor(value) || "Weight needs to be an interger value"
+                          }
                         })
                       }
                     />
                     {errors.events && errors.events[index].weight && (
-                      <span>{ errors.events[index]?.weight?.type }</span>
+                      <p className="text-red-700 text-xs italic">{ errors.events[index].weight?.message }</p>
                     )}
                   </td>
                   <td>
@@ -129,10 +134,10 @@ function CreateTable() {
                       className="w-full mx-2 form-input"
                       type="text"
                       aria-invalid={errors.events && errors.events[index].name ? "true" : "false"}
-                      { ...register(`events.${index}.name`, { required: true }) }
+                      { ...register(`events.${index}.name`, { required: "Event needs a name" }) }
                     />
-                    {errors.events  && errors.events[index].name?.type === 'required' && (
-                      <span>This field is required</span>
+                    {errors.events && errors.events[index].name && (
+                      <p className="text-red-700 text-xs italic">{ errors.events[index].name?.message }</p>
                     )}
                   </td>
                   <td>

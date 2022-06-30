@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { login, reset, selectAuth, UserFormData } from "../features/auth/authSlice";
@@ -6,10 +7,7 @@ import { setError } from "../features/err/errorSlice";
 
 
 function Login() {
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-  });
+  const { register, handleSubmit, formState: { errors } } = useForm<UserFormData>();
 
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
@@ -24,31 +22,15 @@ function Login() {
     }
 
     if (isSuccess || user) {
-      navigate('/');
+      navigate(-1);
     }
 
     dispatch(reset());
   }, [user, isError, isSuccess, message, navigate, dispatch]);
 
-  const onSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-
-    const { email, password, } = formData;
-    
-    const userData: UserFormData = {
-      email,
-      password
-    }
-
-    dispatch(login(userData));
-  }
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData((previousState) => ({
-      ...previousState,
-      [e.target.name]: e.target.value
-    }));
-  }
+  const onSubmit = handleSubmit((formData) => {
+    dispatch(login(formData));
+  });
 
   return (
     <div className="bg-slate-300 container mx-auto rounded-xl mt-5 max-w-lg shadow-lg p-5">
@@ -56,27 +38,37 @@ function Login() {
       <form onSubmit={onSubmit}>
         <div>
           <label htmlFor="email" className="block mb-1">Email</label>
-          <input 
-            onChange={handleChange} 
-            value={formData.email}  
-            type="email" 
-            id="email" 
-            name="email" 
-            className="py-2 outline-none rounded-md w-full" 
-            required
+          <input
+            type="email"
+            className="py-2 outline-none rounded-md w-full"
+            aria-invalid={errors.email ? "true" : "false"}
+            {
+              ...register('email', {
+                required: "Email is required",
+              })
+            }
           />
+          {
+            errors.email &&
+            <p className="text-red-700 text-xs italic">{errors.email.message}</p>
+          }
         </div>
         <div>
           <label htmlFor="password" className="block mb-1">Password</label>
-          <input 
-            onChange={handleChange} 
-            value={formData.password}  
+          <input
             type="password" 
-            id="password"
-            name="password" 
-            className="py-2 outline-none rounded-md w-full" 
-            required
+            className="py-2 outline-none rounded-md w-full"
+            aria-invalid={errors.password ? "true" : "false"}
+            {
+              ...register('password', {
+                required: "Password is required"
+              })
+            }
           />
+          {
+            errors.password &&
+            <p className="text-red-700 text-xs italic">{errors.password.message}</p>
+          }
         </div>
         <input type="submit" className="mt-4 w-full text-white bg-green-500 rounded hover:bg-green-400 transition duration-300 py-2 px-2 text-lg" value="Login" />
       </form>
