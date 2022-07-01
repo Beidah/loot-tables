@@ -2,6 +2,27 @@ const { protect } = require('../middleware/auth');
 const Tables = require('../models/tables');
 const Users = require('../models/users');
 
+const getAllTables = async (req, res, next) => {
+  try {
+    let tables;
+    if (req.user) {
+      tables = await Tables.find({ $or: [{private: false}, {user: req.user}] })
+    } else {
+      tables = await Tables.find({ private: false });
+    }
+
+    return res.json(tables);
+  } catch (err) {
+    console.error("Error", err);
+
+    return next({
+      status: 500,
+      message: err.message,
+    })
+  }
+
+}
+
 const getTable = async (req, res, next) => {
   const { id } = req.params;
 
@@ -10,9 +31,8 @@ const getTable = async (req, res, next) => {
 
   if (
     !table || 
-    (table.private && (!req.user || table.user.equals(req.user)))
+    (table.private && (!req.user || !table.user.equals(req.user)))
   ) {
-    console.log(!table);
     return next({
       status: 404,
       message: 'Table not found',
@@ -27,7 +47,6 @@ const createTable =  async (req, res, next) => {
 
   for (let param of requiredParams) {
     if (!req.body[param]) {
-      console.error(req);
       return next({
         status: 400,
         message: `Missing parameter: ${param}`,
@@ -73,6 +92,7 @@ const createTable =  async (req, res, next) => {
 }
 
 module.exports = {
+  getAllTables,
   getTable: [getTable],
   createTable: [protect, createTable],
 }
