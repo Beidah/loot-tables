@@ -77,24 +77,31 @@ function CreateTable() {
     <div className="bg-slate-200 container mx-auto rounded-xl mt-5 max-w-4xl shadow-lg p-5">
       <h1 className="text-2xl text-center mb-5">Create Table</h1>
       <form onSubmit={onSubmit}>
-        <div className="w-1/2 inline">
-          <label htmlFor="name" className="mb-1 mr-2">Table Name</label>
-          <input
-            className="py-2 outline-none rounded-md w-1/2 form-input"
-            aria-invalid={errors.name ? "true" : "false" }
-            { ...register("name", {required: "Name is required"}) }
-          />
-          { errors.name && (
-            <p className="text-red-700 text-xs italic">{errors.name.message}</p>
-          )}
-        </div>
-        <div className="w-1/2 inline">
-          <label htmlFor="private" className="mb-1 mx-2">Private</label>
-          <input
-            className="form-checkbox"
-            type="checkbox"
-            { ...register('private') }
-          />
+        <div className="grid grid-cols-5">
+          <div className="col-span-4">
+
+            <label htmlFor="name" className="mr-2">Table Name</label>
+          
+            <input
+              className="py-2 outline-none rounded-md form-input w-3/4"
+              aria-invalid={errors.name ? "true" : "false" }
+              { ...register("name", {required: "Name is required"}) }
+              />
+          
+          </div>
+          <div className="">
+            <label htmlFor="private" className="mb-1 mx-2">Private</label>
+            <input
+              className="form-checkbox"
+              type="checkbox"
+              { ...register('private') }
+            />
+          </div>
+          <div>
+            { errors.name && (
+              <p className="text-red-700 text-xs italic">{errors.name.message}</p>
+            )}
+          </div>
         </div>
         <div>
           <h2 className="text-lg my-5 font-bold">Events</h2>
@@ -113,18 +120,15 @@ function CreateTable() {
                     <input
                       className="w-32 form-input rounded-md outline-none"
                       type="number"
-                      aria-invalid={errors.events && errors.events[index].weight ? "true" : "false"}
+                      aria-invalid={errors.events && errors.events[index] && errors.events[index].weight ? "true" : "false"}
                       { ...register(`events.${index}.weight`, { 
                           required: "Event weight is required", 
                           max: { value: 100, message: "Weight cannot excede 100" }, 
                           min: { value: 1, message: 'Weight needs to be at least 1' },
-                          validate: (value) => {
-                            return value === Math.floor(value) || "Weight needs to be an interger value"
-                          }
                         })
                       }
                     />
-                    {errors.events && errors.events[index].weight && (
+                    {errors.events && errors.events[index] && errors.events[index].weight && (
                       <p className="text-red-700 text-xs italic">{ errors.events[index].weight?.message }</p>
                     )}
                   </td>
@@ -133,11 +137,11 @@ function CreateTable() {
                     <input
                       className="w-full mx-2 form-input"
                       type="text"
-                      aria-invalid={errors.events && errors.events[index].name ? "true" : "false"}
+                      aria-invalid={errors.events && errors.events[index] && errors.events[index].name ? "true" : "false"}
                       { ...register(`events.${index}.name`, { required: "Event needs a name" }) }
                     />
-                    {errors.events && errors.events[index].name && (
-                      <p className="text-red-700 text-xs italic">{ errors.events[index].name?.message }</p>
+                    {errors.events && errors.events[index] && errors.events[index].name && (
+                      <p className="text-red-700 text-xs italic px-3">{ errors.events[index].name?.message }</p>
                     )}
                   </td>
                   <td>
@@ -147,10 +151,10 @@ function CreateTable() {
               })}
             </tbody>
           </table>
-          <button onClick={addEvent}>Add new</button>
         </div>
 
-        <button>Submit</button>
+        <button className="py-2 px-2 font-medium text-white bg-blue-500 rounded hover:bg-blue-400 transition duration-300 mr-3 mt-3" onClick={addEvent}>Add new</button>
+        <button className="py-2 px-2 font-medium text-white bg-green-500 rounded hover:bg-green-400 transition duration-300">Submit</button>
       </form>
     </div>
   )
