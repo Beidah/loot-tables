@@ -37,6 +37,7 @@ function Header() {
 						{/* Primary Navbar items */}
 						<div className="hidden md:flex items-center space-x-1">
 							<Link to="/" className="py-4 px-2 text-green-500 border-b-4 border-green-500 font-semibold ">Home</Link>
+							<Link to="/tables" className="py-4 px-2 text-gray-500 font-semibold hover:text-green-500 transition duration-300">Browse Tables</Link>
 							{ user &&
 								// only show create table link if user is logged in
 								<Link to="/tables/new" className="py-4 px-2 text-gray-500 font-semibold hover:text-green-500 transition duration-300">New Table</Link>

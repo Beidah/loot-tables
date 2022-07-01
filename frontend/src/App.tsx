@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import './App.css';
 import ErrorAlert from './components/ErrorAlert';
 import Header from './components/Header';
+import BrowseTables from './pages/BrowseTables';
 import CreateTable from './pages/CreateTable';
 import Landing from './pages/Landing';
 import Login from './pages/Login';
@@ -20,6 +21,7 @@ function App() {
           <Route path='/' element={<Landing />} />
           <Route path='/signup' element={<Signup />} />
           <Route path='/login' element={<Login />} />
+          <Route path='/tables' element={<BrowseTables />} />
           <Route path='/tables/new' element={<CreateTable />} />
           <Route path='/tables/:id' element={<Table />} />
           <Route path='/users/:id' element={<UserPage />} />
