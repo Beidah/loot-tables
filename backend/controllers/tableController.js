@@ -6,9 +6,13 @@ const getAllTables = async (req, res, next) => {
   try {
     let tables;
     if (req.user) {
-      tables = await Tables.find({ $or: [{private: false}, {user: req.user}] })
+      tables = await Tables
+        .find({ $or: [{private: false}, {user: req.user}] }, '-events')
+        .populate('user', 'name _id');
     } else {
-      tables = await Tables.find({ private: false });
+      tables = await Tables
+        .find({ private: false }, '-events')
+        .populate('user', 'name _id');
     }
 
     return res.json(tables);

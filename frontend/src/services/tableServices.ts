@@ -18,6 +18,33 @@ export interface Table {
   }
 }
 
+export const getAllTables = async(userToken?: string) => {
+  try {
+    let headers: AxiosRequestHeaders = {};
+
+    if (userToken)
+      headers.authorization = `Bearer ${userToken}`;
+
+    const route = API_URL;
+    const { data } = await axios.get<Table[]>(route, {
+      headers
+    });
+    
+    if (data) return data;
+
+    throw new Error("No data found");
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      if (error.response && error.response.data) {
+        const message = (error.response.data as Error).message;
+        throw new Error(message);
+      }
+    }
+
+    throw error;
+  }
+}
+
 export const getTable = async (tableId: string, userToken?: string) => {
   try {
     let headers: AxiosRequestHeaders = {};
