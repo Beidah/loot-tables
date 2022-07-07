@@ -1,9 +1,12 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
+import Pagination from "../components/Pagination";
 import { selectUserToken } from "../features/auth/authSlice";
 import { setError } from "../features/err/errorSlice";
 import { getUser, User } from "../services/userServices";
+
+const PageSize = 10;
 
 function UserPage() {
   const [user, setUser] = useState<User>();
@@ -13,6 +16,8 @@ function UserPage() {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const userToken = useAppSelector(selectUserToken);
+
+
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -31,7 +36,15 @@ function UserPage() {
     }
 
     fetchUser();
-  }, [id, navigate, dispatch, userToken]);
+  }, []);
+
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const currentTableData = useMemo(() => {
+    const firstPageIndex = (currentPage - 1) * PageSize;
+    const lastPageIndex = firstPageIndex + PageSize;
+    return user?.tables?.slice(firstPageIndex, lastPageIndex);
+  }, [currentPage, user]);
 
   if (loading) {
     // TODO: create loading component
@@ -53,13 +66,19 @@ function UserPage() {
       <h2 className="text-2xl text-center mb-5 font-bold">{user.name}'s Tables</h2>
       <div className="container">
         <ul>
-          {user.tables?.map((table) => (
+          {currentTableData?.map((table) => (
             <li key={table._id}>
               <Link className="text-blue-500" to={`/tables/${table._id}`}>{table.name}</Link>
             </li>
           ))}
         </ul>
       </div>
+      <Pagination
+        currentPage={currentPage}
+        totalCount={user.tables?.length || 0}
+        pageSize={PageSize}
+        onPageChange={page => setCurrentPage(page)}
+      />
     </div>
   )
 }
