@@ -7,6 +7,7 @@ export interface Table {
   _id: string,
   name: string,
   private: boolean,
+  description?: string,
   events?: {
     _id: string,
     name: string,

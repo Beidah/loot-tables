@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react"
 import { Link } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import Pagination from "../components/Pagination";
+import TableCard from "../components/TableCard";
 import { selectUserToken } from "../features/auth/authSlice";
 import { setError } from "../features/err/errorSlice";
 import { getAllTables, Table } from "../services/tableServices";
@@ -44,9 +45,7 @@ function BrowseTables() {
         {loading && <p>Loading...</p>}
         {!loading && 
           currentTableData.map((table) => (
-            <div key={table._id}>
-              <p><Link className="text-blue-500" to={`/tables/${table._id}`}>{table.name}</Link></p>
-            </div>
+            <TableCard key={table._id} table={table} displayAuthor={true} />
           ))
         }
       </div>

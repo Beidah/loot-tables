@@ -4,6 +4,7 @@ const tablesSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
+    maxlength: 20,
   },
   user: {
     type: mongoose.Schema.Types.ObjectId,
@@ -22,6 +23,7 @@ const tablesSchema = new mongoose.Schema({
       }
     }
   ],
+  description: String,
   private: {
     type: Boolean,
     default: false,
