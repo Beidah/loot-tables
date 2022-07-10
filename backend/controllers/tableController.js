@@ -35,11 +35,11 @@ const getTable = async (req, res, next) => {
 
   if (
     !table || 
-    (table.private && (!req.user || !table.user.equals(req.user)))
+    (table.private && (!req.user || !table.user.equals(req.user.id)))
   ) {
     return next({
       status: 404,
-      message: 'Table not found',
+      message: `Table ${id} not found`,
     });
   }
 
@@ -95,8 +95,36 @@ const createTable =  async (req, res, next) => {
   }
 }
 
+const deleteTable = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    
+    const table = await Tables.findById(id);
+    if (!table) {
+      return next({
+        status: 404,
+        message: `Table ${id} not found`,
+      });
+    }
+
+    if (!table.user.equals(req.user.id) || !req.user.admin) {
+      return next({
+        status: 401,
+        message: 'You do not have permsion to perform that action.'
+      });
+    }
+
+    await Tables.findByIdAndDelete(id);
+
+    res.sendStatus(204);
+  } catch (error) {
+
+  }
+}
+
 module.exports = {
   getAllTables,
   getTable: [getTable],
   createTable: [protect, createTable],
+  delete: [protect, deleteTable]
 }

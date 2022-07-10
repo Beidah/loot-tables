@@ -6,6 +6,8 @@ router.route('/')
   .post(controller.createTable);
 
 
-router.route('/:id').get(controller.getTable);
+router.route('/:id')
+  .get(controller.getTable)
+  .delete(controller.delete);
 
 module.exports = router;
