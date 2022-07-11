@@ -5,6 +5,7 @@ import Pagination from "../components/Pagination";
 import TableCard from "../components/TableCard";
 import { selectUser, selectUserToken } from "../features/auth/authSlice";
 import { setError } from "../features/err/errorSlice";
+import { deleteTable } from "../services/tableServices";
 import { getUser, User } from "../services/userServices";
 
 const PageSize = 10;
@@ -36,14 +37,21 @@ function UserPage() {
     }
 
     fetchUser();
-  }, []);
+  }, [dispatch, id, navigate, userToken]);
 
   const [currentPage, setCurrentPage] = useState(1);
 
-  const currentTableData = useMemo(() => {
+  let currentTableData = useMemo(() => {
     const firstPageIndex = (currentPage - 1) * PageSize;
     const lastPageIndex = firstPageIndex + PageSize;
-    return user?.tables?.slice(firstPageIndex, lastPageIndex);
+    let slice = user?.tables?.slice(firstPageIndex, lastPageIndex);
+
+    // Check if we deleted the last table of the page, then go back a page
+    if (slice && slice.length === 0 && ((user?.tables?.length || 0) > 0)) {
+      setCurrentPage(page => page - 1);
+    } else {
+      return slice;
+    }
   }, [currentPage, user]);
 
   if (loading) {
@@ -61,7 +69,19 @@ function UserPage() {
     )
   }
 
-  const onDelete = (tableId: string) => console.log("Delete", tableId)
+  const onDelete = async (tableId: string) => {
+    if (!userToken) return;
+    try {
+      await deleteTable(tableId, userToken);
+      setUser({
+        ...user,
+        tables: user.tables?.filter(table => table._id !== tableId)
+      });
+
+    } catch (error) {
+      dispatch(setError((error as Error).message));
+    }
+  }
 
   return (
     <div className="bg-slate-200 container mx-auto rounded-xl mt-5 max-w-4xl shadow-2xl p-5">

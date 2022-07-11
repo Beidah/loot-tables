@@ -104,3 +104,23 @@ export const submitTable = async (tableData: TableFormValues, userToken?: string
 
   return { results, error: err }
 }
+
+export const deleteTable = async (tableId: string, userToken: string) => {
+  try {
+    const authorization = `Bearer ${userToken}`;
+    await axios.delete(`/api/tables/${tableId}`, {
+      headers: {
+        authorization,
+      }
+    });
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      if (error.response && error.response.data) {
+        const message = (error.response.data as Error).message;
+        throw new Error(message);
+      }
+    }
+
+    throw error;
+  }
+}
