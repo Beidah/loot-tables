@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import Pagination from "../components/Pagination";
 import TableCard from "../components/TableCard";
@@ -99,6 +99,14 @@ function UserPage() {
               }
             />
           ))}
+          { user.tables?.length === 0 && user._id === currentUser?._id &&
+            (
+              <>
+                <p>Looks like you have no tables.</p>
+                <Link className="py-4 text-gray-500 font-semibold hover:text-green-500 transition duration-300" to="/tables/new">Make some?</Link>
+              </>
+            )
+          }
       </div>
       <Pagination
         currentPage={currentPage}
