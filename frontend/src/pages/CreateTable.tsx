@@ -4,29 +4,18 @@ import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { useForm, useFieldArray } from 'react-hook-form';
 import { selectUserToken } from "../features/auth/authSlice";
 import { setError } from "../features/err/errorSlice";
-import { submitTable } from "../services/tableServices";
+import { submitTable, TableFormValues } from "../services/tableServices";
 
-export type TableFormValues = {
-  name: string;
-  private: boolean;
-  events: {
-    name: string;
-    weight: number;
-  }[];
-}
+
 
 function CreateTable() {
   const { register, handleSubmit, control, formState: { errors } } = useForm<TableFormValues>({
     defaultValues: {
-      name: '',
       events: [
-        {
-          name: '',
-          weight: 1,
-        }
-      ],
-      private: false,
-  }});
+        { weight: 1, name: '' }
+      ]
+    }
+  });
 
   const { fields, append, remove } = useFieldArray({
     control,
@@ -62,6 +51,7 @@ function CreateTable() {
   }
 
   const onSubmit = handleSubmit(async (formData) => {
+    console.log(formData.description);
     const { results: data, error } = await submitTable(formData, userToken);
 
     if (error) {
@@ -83,15 +73,23 @@ function CreateTable() {
             <label htmlFor="name" className="mr-2">Table Name</label>
           
             <input
+              id="name"
               className="py-2 outline-none rounded-md form-input w-3/4"
               aria-invalid={errors.name ? "true" : "false" }
-              { ...register("name", {required: "Name is required"}) }
-              />
+              { ...register(
+                "name", 
+                {
+                  required: "Name is required",
+                  maxLength: { value: 20, message: "Name needs to be less than 20 characters"}
+                }) 
+              }
+            />
           
           </div>
           <div className="">
             <label htmlFor="private" className="mb-1 mx-2">Private</label>
             <input
+              id="private"
               className="form-checkbox"
               type="checkbox"
               { ...register('private') }
@@ -102,6 +100,17 @@ function CreateTable() {
               <p className="text-red-700 text-xs italic">{errors.name.message}</p>
             )}
           </div>
+        </div>
+        <div>
+          <label className="block text-left mt-2" >
+            <span className="">Description <span className="text-gray-700 text-sm">(optional)</span></span>
+            <textarea
+              id="description"
+              className="form-textarea mt-1 block w-full rounded-md" 
+              rows={3}
+              {...register('description')}
+            />
+          </label>
         </div>
         <div>
           <h2 className="text-lg my-5 font-bold">Events</h2>
@@ -133,19 +142,19 @@ function CreateTable() {
                     )}
                   </td>
                   <td>
-
+                    {errors.events && errors.events[index] && errors.events[index].name && (
+                      <p className="text-red-700 text-xs italic px-3">{ errors.events[index].name?.message }</p>
+                    )}
                     <input
-                      className="w-full mx-2 form-input"
+                      className="w-full mx-2 form-input rounded-md"
                       type="text"
                       aria-invalid={errors.events && errors.events[index] && errors.events[index].name ? "true" : "false"}
                       { ...register(`events.${index}.name`, { required: "Event needs a name" }) }
                     />
-                    {errors.events && errors.events[index] && errors.events[index].name && (
-                      <p className="text-red-700 text-xs italic px-3">{ errors.events[index].name?.message }</p>
-                    )}
+                    
                   </td>
                   <td>
-                    <button className="bg-red-600 text-white rounded-md pb-1 px-3 m-5" onClick={(e) => {e.preventDefault(); removeEvent(index);}}> - </button>
+                    <button className="bg-red-600 text-white rounded-md pb-1 px-3 mx-5" onClick={(e) => {e.preventDefault(); removeEvent(index);}}> - </button>
                   </td>
                 </tr>);
               })}
