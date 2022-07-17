@@ -5,6 +5,7 @@ import ErrorAlert from './components/ErrorAlert';
 import Header from './components/Header';
 import BrowseTables from './pages/BrowseTables';
 import CreateTable from './pages/CreateTable';
+import EditTable from './pages/EditTable';
 import Landing from './pages/Landing';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
@@ -24,6 +25,7 @@ function App() {
           <Route path='/tables' element={<BrowseTables />} />
           <Route path='/tables/new' element={<CreateTable />} />
           <Route path='/tables/:id' element={<Table />} />
+          <Route path='/tables/:id/edit' element={<EditTable />} />
           <Route path='/users/:id' element={<UserPage />} />
         </Routes>
       </Router>

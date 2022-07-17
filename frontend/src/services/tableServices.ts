@@ -1,5 +1,4 @@
 import axios, { AxiosRequestHeaders } from "axios";
-import { TableFormValues } from "../pages/CreateTable";
 
 const API_URL = '/api/tables/';
 
@@ -17,6 +16,16 @@ export interface Table {
     _id: string,
     name: string,
   }
+}
+
+export type TableFormValues = {
+  name: string;
+  private: boolean;
+  description?: string;
+  events: {
+    name: string;
+    weight: number;
+  }[];
 }
 
 export const getAllTables = async(userToken?: string) => {
@@ -103,6 +112,10 @@ export const submitTable = async (tableData: TableFormValues, userToken?: string
   }
 
   return { results, error: err }
+}
+
+export const updateTable = async (tableData: TableFormValues, userToken: string) => {
+  console.log({ tableData, userToken })
 }
 
 export const deleteTable = async (tableId: string, userToken: string) => {

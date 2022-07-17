@@ -49,6 +49,8 @@ const getTable = async (req, res, next) => {
 const createTable =  async (req, res, next) => {
   const requiredParams = ['name', 'events'];
 
+  console
+
   for (let param of requiredParams) {
     if (!req.body[param]) {
       return next({
@@ -58,8 +60,10 @@ const createTable =  async (req, res, next) => {
     }
   }
 
-  const { name, events, private = false } = req.body;
+  const { name, events, private = false, description } = req.body;
   const { user } = req;
+
+  console.dir({ name, events, private, description })
 
   const tableExists = await Tables.findOne({ name, user });
   if (tableExists) {
@@ -81,6 +85,7 @@ const createTable =  async (req, res, next) => {
     events,
     private,
     user: req.user.id,
+    description: description ? description : undefined
   });
 
   try {
