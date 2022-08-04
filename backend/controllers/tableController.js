@@ -94,7 +94,38 @@ const createTable =  async (req, res, next) => {
     return res.status(201).json(tableToSave);
   } catch (error) {
     return next({
-      status: 400,
+      status: 500,
+      message: error.message
+    });
+  }
+}
+
+const updateTable = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    const table = await Tables.findById(id)
+      .populate('user', 'name _id');
+
+    if (
+      !table || 
+      !table.user.equals(req.user.id) ||
+      !req.user.admin
+    ) {
+      return next({
+        status: 404,
+        message: `Table ${id} not found`,
+      });
+    }
+
+    const newTable = req.body;
+
+    const updatedTable = await Tables.findByIdAndUpdate(id, newTable);
+
+    res.status(200).json(updatedTable);
+  } catch (error) {
+    return next({
+      status: 500,
       message: error.message
     });
   }
@@ -123,7 +154,10 @@ const deleteTable = async (req, res, next) => {
 
     res.sendStatus(204);
   } catch (error) {
-
+    return next({
+      status: 500,
+      message: error.message
+    });
   }
 }
 
@@ -131,5 +165,6 @@ module.exports = {
   getAllTables,
   getTable: [getTable],
   createTable: [protect, createTable],
+  updateTable: [protect, updateTable],
   delete: [protect, deleteTable]
 }

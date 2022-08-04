@@ -6,8 +6,6 @@ import { selectUserToken } from "../features/auth/authSlice";
 import { setError } from "../features/err/errorSlice";
 import { updateTable, TableFormValues, getTable } from "../services/tableServices";
 
-
-
 function EditTable() {
   const { 
     register, 

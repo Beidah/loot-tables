@@ -8,6 +8,7 @@ router.route('/')
 
 router.route('/:id')
   .get(controller.getTable)
+  .patch(controller.updateTable)
   .delete(controller.delete);
 
 module.exports = router;
