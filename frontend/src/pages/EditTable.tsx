@@ -28,7 +28,7 @@ function EditTable() {
 
   useEffect(() => {
     if (!id) {
-      navigate('/login');
+      navigate('/');
       return;
     }
     if (!userToken) {
@@ -71,11 +71,18 @@ function EditTable() {
 
   const onSubmit = handleSubmit(async (formData) => {
     console.dir(formData);
-    if (!userToken) {
+    if (!userToken || !id) {
       dispatch(setError('You need to be logged in to do this.'));
       return;
     }
-    await updateTable(formData, userToken);
+    try {
+      const table = await updateTable(formData, id, userToken);
+      navigate(`/tables/${table._id}`);
+    } catch (error) {
+      console.error(error);
+      dispatch(setError((error as Error).message))
+    }
+
   });
 
   return (

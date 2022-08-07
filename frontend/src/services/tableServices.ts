@@ -1,4 +1,6 @@
 import axios, { AxiosRequestHeaders } from "axios";
+import { useAppSelector } from "../app/hooks";
+import { selectUserToken } from "../features/auth/authSlice";
 
 const API_URL = '/api/tables/';
 
@@ -51,6 +53,7 @@ export const getAllTables = async(userToken?: string) => {
       }
     }
 
+    console.error('unexepected error: ', error);
     throw error;
   }
 }
@@ -78,6 +81,7 @@ export const getTable = async (tableId: string, userToken?: string) => {
       }
     }
 
+    console.error('unexepected error: ', error);
     throw error;
   }
 }
@@ -114,8 +118,36 @@ export const submitTable = async (tableData: TableFormValues, userToken?: string
   return { results, error: err }
 }
 
-export const updateTable = async (tableData: TableFormValues, userToken: string) => {
-  console.log({ tableData, userToken })
+export const updateTable = async (tableData: TableFormValues, tableId: string, userToken?: string) => {
+  
+  if (!userToken) {
+    throw new Error("Need to be logged in.");
+  }
+
+  try {
+    let headers ={
+      authorization: `Bearer ${userToken}`
+    };
+
+    const route = API_URL + tableId;
+    const { data } = await axios.patch<Table>(route, tableData, {
+      headers
+    });
+    
+    if (data) return data;
+
+    throw new Error("No data returned");
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      if (error.response && error.response.data) {
+        const message = (error.response.data as Error).message;
+        throw new Error(message);
+      }
+    }
+
+    console.error('unexepected error: ', error);
+    throw error;
+  }
 }
 
 export const deleteTable = async (tableId: string, userToken: string) => {
@@ -134,6 +166,7 @@ export const deleteTable = async (tableId: string, userToken: string) => {
       }
     }
 
+    console.error('unexepected error: ', error);
     throw error;
   }
 }
