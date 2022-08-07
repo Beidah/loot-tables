@@ -51,15 +51,11 @@ function CreateTable() {
   }
 
   const onSubmit = handleSubmit(async (formData) => {
-    console.log(formData.description);
-    const { results: data, error } = await submitTable(formData, userToken);
-
-    if (error) {
-      dispatch(setError(error));
-    }
-
-    if (data) {
-      navigate(`/tables/${data._id}`);
+    try {
+      const table = await submitTable(formData, userToken);
+      navigate(`/tables/${table._id}`);
+    } catch (error) {
+      dispatch(setError((error as Error).message)); 
     }
   });
 

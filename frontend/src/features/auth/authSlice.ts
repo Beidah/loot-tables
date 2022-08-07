@@ -1,15 +1,32 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import jwtDecode, { JwtPayload } from "jwt-decode";
 import { RootState } from "../../app/store";
 
 const API_URL = '/api/users/';
 
+
+let user: User | null = null;
+
+// check token validity
 const userStored = localStorage.getItem('user');
-
-let user = null;
-
-if (userStored)
-  user = JSON.parse(localStorage.getItem('user') || '') as User;
+if (userStored) {
+  const { token } = JSON.parse(userStored) as User;
+  // check if jwt token is expired
+  let { exp } = jwtDecode<JwtPayload>(token);
+  if (exp) {
+    // exp is in seconds since epoch, while Date wants milliseconds so x1000
+    let expired = new Date(exp * 1000);
+    let today = new Date();
+    if (expired.getTime() < today.getTime()) {
+      // token is expired, remove user from localstorage
+      localStorage.removeItem('user');
+    } else {
+      // token is valid.
+      user = JSON.parse(userStored) as User;
+    }
+  }
+}
 
 export interface UserFormData  {
   name?: string,
