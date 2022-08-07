@@ -87,35 +87,32 @@ export const getTable = async (tableId: string, userToken?: string) => {
 }
 
 export const submitTable = async (tableData: TableFormValues, userToken?: string) => {
-  let results: Table | undefined;
-  let err: string | undefined;
   try {
     if (!userToken) {
-      err = 'User not logged in!'
+      throw new Error('User not logged in!');
     }
 
     const authorization = `Bearer ${userToken}`;
-    results = (await axios.post<Table>('/api/tables', tableData, {
+    const { data } = (await axios.post<Table>('/api/tables', tableData, {
       headers: {
         authorization,
       }
-    })).data;
+    }));
+
+    if (data) return data;
+
+    throw new Error("No data found");
   } catch (error) {
     if (axios.isAxiosError(error)) {
-      let message = '';
       if (error.response && error.response.data) {
-        message = (error.response.data as Error).message;
-      } else {
-        message = error.message;
+        const message = (error.response.data as Error).message;
+        throw new Error(message);
       }
-      err = message;
     }
 
     console.error('unexepected error: ', error);
-    err = 'Unexpected error occurred.';
+    throw error;
   }
-
-  return { results, error: err }
 }
 
 export const updateTable = async (tableData: TableFormValues, tableId: string, userToken?: string) => {
